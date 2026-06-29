@@ -60,7 +60,17 @@ module.exports = async (req, res) => {
 
     console.log("Collections:", collections);
 
-    const projects = await Project.find({});
+   console.log("Database:", mongoose.connection.name);
+
+const collections = await mongoose.connection.db
+  .listCollections()
+  .toArray();
+
+console.log("Collections:", collections);
+
+const projects = await Project.find();
+
+console.log("Projects:", projects);
 
     console.log("Projects:", projects);
 
