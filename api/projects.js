@@ -1,43 +1,43 @@
-const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors");
-
-const app = express();
-
-app.use(cors());
-app.use(express.json());
 
 const dbURI = process.env.MONGODB_URI;
 
 let isConnected = false;
 
 async function connectDB() {
-    if (isConnected) return;
+  if (isConnected) return;
 
-    await mongoose.connect(dbURI);
-
-    isConnected = true;
-    console.log("MongoDB Connected");
+  await mongoose.connect(dbURI);
+  isConnected = true;
 }
 
-const projectSchema = new mongoose.Schema({
-    title: String,
-    description: String,
-    imageUrl: String
-});
+const Project =
+  mongoose.models.Project ||
+  mongoose.model(
+    "Project",
+    new mongoose.Schema({
+      title: String,
+      description: String,
+      imageUrl: String,
+    })
+  );
 
-const Project = mongoose.models.Project || mongoose.model("Project", projectSchema);
+module.exports = async (req, res) => {
+  if (req.method !== "GET") {
+    return res.status(405).json({
+      message: "Method Not Allowed",
+    });
+  }
 
-app.get("/", async (req, res) => {
-    try {
-        await connectDB();
-        const projects = await Project.find();
-        res.json(projects);
-    } catch (err) {
-        res.status(500).json({
-            error: err.message
-        });
-    }
-});
+  try {
+    await connectDB();
 
-module.exports = app;
+    const projects = await Project.find();
+
+    res.status(200).json(projects);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+    });
+  }
+};
