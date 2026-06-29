@@ -1,5 +1,5 @@
 // Fetch projects from your LIVE Vercel backend
-fetch('https://portfolio-backend-lemon-beta.vercel.app/api/projects')
+fetch('/api/projects')
   .then(response => response.json())
   .then(projects => {
     // Find the section in your HTML where projects should go
