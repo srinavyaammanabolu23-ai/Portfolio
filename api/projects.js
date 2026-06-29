@@ -31,8 +31,11 @@ module.exports = async (req, res) => {
 
   try {
     await connectDB();
+await mongoose.connection.db.listCollections().toArray().then(console.log);
 
-    const projects = await Project.find();
+const projects = await Project.find();
+
+console.log(projects);
 
     return res.status(200).json(projects);
   } catch (err) {
