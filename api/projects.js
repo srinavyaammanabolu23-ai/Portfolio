@@ -27,16 +27,20 @@ async function connectDB() {
   return cached.conn;
 }
 
+const projectSchema = new mongoose.Schema(
+  {
+    title: String,
+    description: String,
+    imageUrl: String,
+  },
+  {
+    collection: "projects",
+  }
+);
+
 const Project =
   mongoose.models.Project ||
-  mongoose.model(
-    "Project",
-    new mongoose.Schema({
-      title: String,
-      description: String,
-      imageUrl: String,
-    })
-  );
+  mongoose.model("Project", projectSchema);
 
 module.exports = async (req, res) => {
   if (req.method !== "GET") {
