@@ -2,13 +2,15 @@ const mongoose = require("mongoose");
 
 const dbURI = process.env.MONGODB_URI;
 
-let isConnected = false;
+let cached = global.mongoose || { conn: null };
 
 async function connectDB() {
-  if (isConnected) return;
+  if (cached.conn) return cached.conn;
 
-  await mongoose.connect(dbURI);
-  isConnected = true;
+  cached.conn = await mongoose.connect(dbURI);
+  global.mongoose = cached;
+
+  return cached.conn;
 }
 
 const Project =
@@ -24,9 +26,7 @@ const Project =
 
 module.exports = async (req, res) => {
   if (req.method !== "GET") {
-    return res.status(405).json({
-      message: "Method Not Allowed",
-    });
+    return res.status(405).json({ message: "Method Not Allowed" });
   }
 
   try {
@@ -34,10 +34,8 @@ module.exports = async (req, res) => {
 
     const projects = await Project.find();
 
-    res.status(200).json(projects);
+    return res.status(200).json(projects);
   } catch (err) {
-    res.status(500).json({
-      error: err.message,
-    });
+    return res.status(500).json({ error: err.message });
   }
 };
