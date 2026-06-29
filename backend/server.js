@@ -9,7 +9,7 @@ app.use(cors());
 console.log("Attempting to connect to MongoDB...");
 
 // Make sure to put your actual simple password in here, with NO < or > brackets!
-const dbURI = 'mongodb+srv://Srinavya:Navya2026@cluster0.wtwprkc.mongodb.net/portfolioDB?retryWrites=true&w=majority';
+const dbURI = process.env.MONGODB_URI;
 
 mongoose.connect(dbURI)
   .then(() => console.log("✅ MongoDB Connected Successfully!"))
