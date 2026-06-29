@@ -28,7 +28,7 @@ const projectSchema = new mongoose.Schema({
 
 const Project = mongoose.models.Project || mongoose.model("Project", projectSchema);
 
-app.get("/api/projects", async (req, res) => {
+app.get("/", async (req, res) => {
     try {
         await connectDB();
         const projects = await Project.find();
